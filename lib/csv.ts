@@ -1,4 +1,9 @@
-import type { Expense } from "./types";
+interface CsvRecord {
+  date: string;
+  category: string;
+  description: string;
+  amount: number;
+}
 
 function escapeCsvField(field: string): string {
   if (field.includes(",") || field.includes('"') || field.includes("\n")) {
@@ -7,13 +12,13 @@ function escapeCsvField(field: string): string {
   return field;
 }
 
-export function buildCsv(expenses: Expense[]): string {
+export function buildCsv<T extends CsvRecord>(records: T[]): string {
   const header = ["Date", "Category", "Description", "Amount"];
-  const rows = expenses.map((expense) => [
-    expense.date,
-    expense.category,
-    escapeCsvField(expense.description),
-    expense.amount.toFixed(2),
+  const rows = records.map((record) => [
+    record.date,
+    record.category,
+    escapeCsvField(record.description),
+    record.amount.toFixed(2),
   ]);
   return [header, ...rows].map((row) => row.join(",")).join("\n");
 }

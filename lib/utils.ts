@@ -1,10 +1,9 @@
-const currencyFormatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
-
 export function formatCurrency(amount: number): string {
-  return currencyFormatter.format(amount);
+  const formatted = new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+  return `$${formatted}`;
 }
 
 export function formatDate(isoDate: string): string {

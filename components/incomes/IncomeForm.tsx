@@ -4,31 +4,31 @@ import { useState, type FormEvent } from "react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
-import { CATEGORIES, type Category, type Expense, type ExpenseFormValues } from "@/lib/types";
+import { INCOME_CATEGORIES, type Income, type IncomeCategory, type IncomeFormValues } from "@/lib/types";
 import { validateRecordValues, isValid } from "@/lib/validation";
 import { todayIso } from "@/lib/utils";
 
-interface ExpenseFormProps {
-  initialExpense?: Expense;
-  onSubmit: (values: { date: string; amount: number; category: Category; description: string }) => void;
+interface IncomeFormProps {
+  initialIncome?: Income;
+  onSubmit: (values: { date: string; amount: number; category: IncomeCategory; description: string }) => void;
   onCancel: () => void;
 }
 
-const EMPTY_VALUES: ExpenseFormValues = {
+const EMPTY_VALUES: IncomeFormValues = {
   date: todayIso(),
   amount: "",
   category: "",
   description: "",
 };
 
-export default function ExpenseForm({ initialExpense, onSubmit, onCancel }: ExpenseFormProps) {
-  const [values, setValues] = useState<ExpenseFormValues>(
-    initialExpense
+export default function IncomeForm({ initialIncome, onSubmit, onCancel }: IncomeFormProps) {
+  const [values, setValues] = useState<IncomeFormValues>(
+    initialIncome
       ? {
-          date: initialExpense.date,
-          amount: String(initialExpense.amount),
-          category: initialExpense.category,
-          description: initialExpense.description,
+          date: initialIncome.date,
+          amount: String(initialIncome.amount),
+          category: initialIncome.category,
+          description: initialIncome.description,
         }
       : EMPTY_VALUES
   );
@@ -43,7 +43,7 @@ export default function ExpenseForm({ initialExpense, onSubmit, onCancel }: Expe
     onSubmit({
       date: values.date,
       amount: Number(values.amount),
-      category: values.category as Category,
+      category: values.category as IncomeCategory,
       description: values.description.trim(),
     });
   };
@@ -72,11 +72,11 @@ export default function ExpenseForm({ initialExpense, onSubmit, onCancel }: Expe
         label="Category"
         name="category"
         value={values.category}
-        onChange={(e) => setValues((prev) => ({ ...prev, category: e.target.value as Category }))}
+        onChange={(e) => setValues((prev) => ({ ...prev, category: e.target.value as IncomeCategory }))}
         error={errors.category}
       >
         <option value="">Select a category…</option>
-        {CATEGORIES.map((category) => (
+        {INCOME_CATEGORIES.map((category) => (
           <option key={category} value={category}>
             {category}
           </option>
@@ -85,7 +85,7 @@ export default function ExpenseForm({ initialExpense, onSubmit, onCancel }: Expe
       <Input
         label="Description"
         name="description"
-        placeholder="e.g. Groceries at Trader Joe's"
+        placeholder="e.g. Monthly salary"
         value={values.description}
         onChange={(e) => setValues((prev) => ({ ...prev, description: e.target.value }))}
         error={errors.description}
@@ -94,7 +94,7 @@ export default function ExpenseForm({ initialExpense, onSubmit, onCancel }: Expe
         <Button type="button" variant="ghost" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit">{initialExpense ? "Save changes" : "Add expense"}</Button>
+        <Button type="submit">{initialIncome ? "Save changes" : "Add income"}</Button>
       </div>
     </form>
   );

@@ -1,7 +1,9 @@
-import type { ExpenseFormErrors, ExpenseFormValues } from "./types";
+import type { RecordFormErrors, RecordFormValues } from "./types";
 
-export function validateExpense(values: ExpenseFormValues): ExpenseFormErrors {
-  const errors: ExpenseFormErrors = {};
+export function validateRecordValues<C extends string>(
+  values: RecordFormValues<C>
+): RecordFormErrors {
+  const errors: RecordFormErrors = {};
 
   if (!values.date) {
     errors.date = "Date is required.";
@@ -27,6 +29,6 @@ export function validateExpense(values: ExpenseFormValues): ExpenseFormErrors {
   return errors;
 }
 
-export function isValid(errors: ExpenseFormErrors): boolean {
+export function isValid(errors: RecordFormErrors): boolean {
   return Object.keys(errors).length === 0;
 }

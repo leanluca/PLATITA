@@ -10,8 +10,10 @@ import {
   type ReactNode,
 } from "react";
 import type { Expense } from "@/lib/types";
-import { loadExpenses, saveExpenses } from "@/lib/storage";
+import { loadFromStorage, saveToStorage } from "@/lib/storage";
 import { generateId } from "@/lib/utils";
+
+const STORAGE_KEY = "platita:expenses";
 
 interface ExpenseContextValue {
   expenses: Expense[];
@@ -28,12 +30,12 @@ export function ExpenseProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setExpenses(loadExpenses());
+    setExpenses(loadFromStorage<Expense>(STORAGE_KEY));
     setLoading(false);
   }, []);
 
   useEffect(() => {
-    if (!loading) saveExpenses(expenses);
+    if (!loading) saveToStorage(STORAGE_KEY, expenses);
   }, [expenses, loading]);
 
   const addExpense = useCallback((expense: Omit<Expense, "id" | "createdAt">) => {

@@ -1,0 +1,59 @@
+"use client";
+
+import { useMemo } from "react";
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import Card from "@/components/ui/Card";
+import { useIncomeContext } from "@/contexts/IncomeContext";
+import { INCOME_CATEGORY_META } from "@/lib/incomeCategories";
+import { formatCurrency } from "@/lib/utils";
+import type { IncomeCategory } from "@/lib/types";
+
+export default function IncomeCategoryChart() {
+  const { incomes } = useIncomeContext();
+
+  const data = useMemo(() => {
+    const byCategory = new Map<IncomeCategory, number>();
+    for (const income of incomes) {
+      byCategory.set(income.category, (byCategory.get(income.category) ?? 0) + income.amount);
+    }
+    return Array.from(byCategory.entries())
+      .map(([category, amount]) => ({ category, amount }))
+      .sort((a, b) => b.amount - a.amount);
+  }, [incomes]);
+
+  return (
+    <Card>
+      <p className="mb-4 text-sm font-medium text-zinc-300">Income by source</p>
+      {data.length === 0 ? (
+        <p className="py-16 text-center text-sm text-zinc-500">No incomes yet.</p>
+      ) : (
+        <ResponsiveContainer width="100%" height={260}>
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey="amount"
+              nameKey="category"
+              innerRadius={60}
+              outerRadius={90}
+              paddingAngle={2}
+            >
+              {data.map((entry) => (
+                <Cell key={entry.category} fill={INCOME_CATEGORY_META[entry.category].color} />
+              ))}
+            </Pie>
+            <Tooltip
+              formatter={(value) => formatCurrency(Number(value))}
+              contentStyle={{
+                background: "#18181b",
+                border: "1px solid #27272a",
+                borderRadius: 8,
+                color: "#f4f4f5",
+              }}
+            />
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
+      )}
+    </Card>
+  );
+}
